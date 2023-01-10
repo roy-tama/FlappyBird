@@ -13,6 +13,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scrollNode: SKNode!
     var wallNode: SKNode!
     var bird: SKSpriteNode!
+    var star: SKSpriteNode! // 星追加
     
     // 衝突判定カテゴリ（識別ID）
     // 「<<」はビットをずらす符号（右側の数値分ビットをずらしている）
@@ -26,7 +27,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabelNode: SKLabelNode!
     var bestScoreLabelNode: SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
-    
+    // アイテムスコア用
+    var itemScore = 0
+    var itemScoreLabelNode: SKLabelNode!
+
     // SKView上にシーンが表示された時に呼ばれるメソッド
     override func didMove(to view: SKView) {
 
@@ -49,11 +53,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupCloud()
         setupWall()
         setupBird()
+        setupStar()
         
         // スコア表示ラベルの設定
         setupScoreLabel()
+        
     }
     
+    func setupStar() {
+        let starTexture = SKTexture(imageNamed: "star")
+//        starTexture.filteringMode = .linear
+        
+        //starのスプライトを配置
+        star = SKSpriteNode(texture: starTexture)
+
+        // スプライトの表示する位置を指定する
+        star.position = CGPoint(x: self.frame.size.width * 0.2, y: self.frame.size.height * 0.4)
+        let randomDouble = Double.random(in: 0.3..<0.7)
+        print("乱数：\(randomDouble)")
+        
+        addChild(star)
+
+    }
+    /// 地面のセッティングを行う
+    ///  - return : なし
     func setupGround() {
         // 地面の画像を読み込む
         let groundTexture = SKTexture(imageNamed: "ground")
@@ -359,9 +382,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // スコア表示を作成
         score = 0
         scoreLabelNode = SKLabelNode()
+        scoreLabelNode.fontSize = CGFloat(20)
         scoreLabelNode.fontColor = UIColor.black
         scoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 60)
-        scoreLabelNode.zPosition = 100 // 一番奥に表示
+        scoreLabelNode.zPosition = 100 // 一番手前に表示
         scoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
         scoreLabelNode.text = "Score:\(score)"
         self.addChild(scoreLabelNode)
@@ -369,6 +393,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ベストスコア表示を作成
         let bestScore = userDefaults.integer(forKey: "BEST")
         bestScoreLabelNode = SKLabelNode()
+        bestScoreLabelNode.fontSize = CGFloat(20)
         bestScoreLabelNode.fontColor = UIColor.black
         bestScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 90)
         bestScoreLabelNode.zPosition = 100 // 一番手前に表示
@@ -376,5 +401,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
         
+        // TODO アイテムスコア表示ラベルの設定
+        itemScore = 0
+        itemScoreLabelNode = SKLabelNode()
+        itemScoreLabelNode.fontSize = CGFloat(20)
+        itemScoreLabelNode.fontColor = UIColor.black
+        itemScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 120)
+        itemScoreLabelNode.zPosition = 100 // 一番手前に表示
+        itemScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemScoreLabelNode.text = "Item Score:\(itemScore)"
+        self.addChild(itemScoreLabelNode)
+
     }
 }
