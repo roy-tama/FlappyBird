@@ -13,6 +13,7 @@
 		40853C2A2967C9C800B59E91 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40853C282967C9C800B59E91 /* Main.storyboard */; };
 		40853C2C2967C9CB00B59E91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40853C2B2967C9CB00B59E91 /* Assets.xcassets */; };
 		40853C2F2967C9CB00B59E91 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40853C2D2967C9CB00B59E91 /* LaunchScreen.storyboard */; };
+		4088C4FE2973915F00052563 /* itemGet.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4088C4FD2973915F00052563 /* itemGet.mp3 */; };
 		40D2D9942968378A00644394 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40D2D9932968378A00644394 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		40853C2B2967C9CB00B59E91 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		40853C2E2967C9CB00B59E91 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		40853C302967C9CB00B59E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4088C4FD2973915F00052563 /* itemGet.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = itemGet.mp3; sourceTree = "<group>"; };
 		40D2D9932968378A00644394 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 				40853C2B2967C9CB00B59E91 /* Assets.xcassets */,
 				40853C2D2967C9CB00B59E91 /* LaunchScreen.storyboard */,
 				40853C302967C9CB00B59E91 /* Info.plist */,
+				4088C4FD2973915F00052563 /* itemGet.mp3 */,
 			);
 			path = FlappyBird;
 			sourceTree = "<group>";
@@ -128,6 +131,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4088C4FE2973915F00052563 /* itemGet.mp3 in Resources */,
 				40853C2F2967C9CB00B59E91 /* LaunchScreen.storyboard in Resources */,
 				40853C2C2967C9CB00B59E91 /* Assets.xcassets in Resources */,
 				40853C2A2967C9C800B59E91 /* Main.storyboard in Resources */,
