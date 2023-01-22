@@ -15,6 +15,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var starNode: SKNode! // 星追加
     var bird: SKSpriteNode!
     var starEx: SKSpriteNode!
+    var backGroundMusic: SKAudioNode!
         
     // 衝突判定カテゴリ（識別ID）
     // 「<<」はビットをずらす符号（右側の数値分ビットをずらしている）
@@ -38,7 +39,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
 
         // 重力を設定
-        physicsWorld.gravity = CGVector(dx: 0, dy: -4)
+        physicsWorld.gravity = CGVector(dx: 0, dy: -3)
+//        physicsWorld.gravity = CGVector(dx: 0, dy: -4)
         physicsWorld.contactDelegate = self
         
         // 背景色の設定
@@ -56,44 +58,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupGround()
         setupCloud()
         setupWall()
-//        setupStar_exsample()
         setupStar()
         setupBird()
+        
+        // BGMの読み込み
+        backGroundMusic = SKAudioNode(fileNamed: "flappyBgm")
+        addChild(backGroundMusic)
+
         // スコア表示ラベルの設定
         setupScoreLabel()
         
     }
 
-/*
-    func setupStar_exsample() {
-
-        let starTexture = SKTexture(imageNamed: "star")
-        starTexture.filteringMode = .linear
-
-        //starのスプライトを配置
-        starEx = SKSpriteNode(texture: starTexture)
-        starEx.position = CGPoint(x: self.frame.size.width * 0.7, y: self.frame.size.height * 0.4)
-
-        // 移動する距離を計算
-        let movingDistance = self.frame.size.width + starTexture.size().width
-
-        // 画面外まで移動するアクションを作成
-        let moveStar = SKAction.moveBy(x: -movingDistance, y: 0, duration: 4)
-        
-        // 自身を取り除くアクションを作成
-        let removeStar = SKAction.removeFromParent()
-
-        // 2つのアニメーションを順に実行するアクションを作成
-        let starAnimation = SKAction.sequence([moveStar,removeStar])
-
-        // アニメーション設定
-        starEx.run(starAnimation)
-        
-        // スプライトを追加する
-        addChild(starEx)
-        
-    }
-*/
     func setupStar() {
         // 星のテクスチャを読み込む
         let starTexture = SKTexture(imageNamed: "star")
@@ -103,7 +79,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let movingDistance = self.frame.size.width + starTexture.size().width
 
         // 画面外まで移動するアクションを作成
-        let moveStar = SKAction.moveBy(x: -movingDistance, y: 0, duration: 4)
+        let moveStar = SKAction.moveBy(x: -movingDistance, y: 0, duration: 3)
         
         // 自身を取り除くアクションを作成
         let removeStar = SKAction.removeFromParent()
@@ -127,9 +103,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 壁の画像を読み込む
         let wallTexture = SKTexture(imageNamed: "wall")
 
-        // 空の中央位置を基準にして下側の壁の中央位置を取得
-        let under_wall_center_y = sky_center_y - slit_length / 2 - wallTexture.size().height / 2
-
         // 星を生成するアクションを作成
         let createStarAnimation = SKAction.run({
             // 星をまとめるノードを作成
@@ -149,33 +122,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // 下壁＋スリット/2の中央をy軸にする
             star.position = CGPoint(x: 0, y: under_wall_y + slit_length / 2)
 
-            // 下側の壁に物理体を設定
-//            star.physicsBody = SKPhysicsBody(rectangleOf: star.size)
+            // 星に物理体を設定
             star.physicsBody = SKPhysicsBody(circleOfRadius: star.size.height / 2)
             star.physicsBody?.categoryBitMask = self.itemCategory
             star.physicsBody?.isDynamic = false
-//            under.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
-//            under.physicsBody?.categoryBitMask = self.wallCategory
-//            under.physicsBody?.isDynamic = false
 
-            
             // 星をまとめるノードに星を追加
             starCollection.addChild(star)
                         
             // 星をまとめるノードにアニメーションを追加
             starCollection.run(starAnimation)
             
-            // 壁を表示するノードに今回作成した壁を追加
+            // 星を表示するノードに今回作成した壁を追加
             self.starNode.addChild(starCollection)
         })
        
-        // 次の壁作成までの時間待ちのアクションを作成
+        // 次の星作成までの時間待ちのアクションを作成
         let waitAnimation = SKAction.wait(forDuration: 2)
         
-        // 「壁を作成->時間まち->壁を作成」を無制限に繰り返すアクションを作成
+        // 「星を作成->時間まち->星を作成」を無制限に繰り返すアクションを作成
         let repeatForeverAnimation = SKAction.repeatForever(SKAction.sequence([createStarAnimation,waitAnimation]))
         
-        // 壁を表示するノードに壁の作成を無限に繰り返すアクションを設定
+        // 星を表示するノードに星の作成を無限に繰り返すアクションを設定
         starNode.run(repeatForeverAnimation)
 
     }
@@ -390,8 +358,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
         // 衝突判定の対象となるカテゴリの指定
         // 地面や壁と衝突した場合はゲームオーバーとなり、スコアカウント用の透明な壁と衝突した場合はスコアアップするから
-        // この3つのカテゴリを衝突判定対象として指定
-//        bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | scoreCategory
+        // ４つのカテゴリを衝突判定対象として指定
         bird.physicsBody?.contactTestBitMask = groundCategory | wallCategory | scoreCategory | itemCategory
 
         // 衝突した時に物理回転させない
@@ -426,15 +393,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if scrollNode.speed <= 0 {
             return
         }
-/*
-        if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory
-            || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
-*/
+        
+        // scoreCategoryかitemCategoryのどちらかに該当する場合の処理
         if ((contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory
             || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory)
                 || ((contact.bodyA.categoryBitMask & itemCategory) == itemCategory
                     || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory) {
 
+            // scoreCategoryに該当した場合
             if (contact.bodyA.categoryBitMask & scoreCategory) == scoreCategory
                 || (contact.bodyB.categoryBitMask & scoreCategory) == scoreCategory {
                 
@@ -452,9 +418,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     userDefaults.synchronize()
                 }
             }
+            // itemCategoryに該当した場合
             if (contact.bodyA.categoryBitMask & itemCategory) == itemCategory
                         || (contact.bodyB.categoryBitMask & itemCategory) == itemCategory {
                 print("rootA:itemScoreUp")
+                
+                // 効果音の読み込み
+                let effectSound = SKAction.playSoundFileNamed("itemGet", waitForCompletion: false)
+                self.run(effectSound)
                 
                 itemScore += 1
                 itemScoreLabelNode.text = "Item Score:\(itemScore)"
@@ -476,6 +447,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             // 壁か地面と衝突した
             print("GameOver")
+            
             // スクロールを停止
             scrollNode.speed = 0
             
@@ -483,8 +455,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bird.physicsBody?.collisionBitMask = groundCategory
             
             // 衝突後１秒間は鳥をくるくる回転させる
-            let roll = SKAction.rotate(
-                byAngle: CGFloat(Double.pi) * CGFloat(bird.position.y) * 0.01, duration: 1)
+            let roll = SKAction.rotate(byAngle: CGFloat(Double.pi) * CGFloat(bird.position.y) * 0.01, duration: 1)
             bird.run(roll, completion: {
                 self.bird.speed = 0
             })
@@ -502,7 +473,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.position = CGPoint(x: self.frame.size.width * 0.2, y: self.frame.size.height * 0.7)
         bird.physicsBody?.velocity = CGVector.zero
         // 壁と地面の両方に反発するように戻す
-        bird.physicsBody?.collisionBitMask = wallCategory | groundCategory
+        bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
         bird.zPosition = 0
         
         // 全ての壁を取り除く
@@ -512,7 +483,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // 鳥の羽ばたきを戻す
         bird.speed = 1
-        
+
         // スクロールを再開する
         scrollNode.speed = 1
         
@@ -563,6 +534,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bestItemScoreLabelNode.text = "Best ItemScore:\(bestItemScore)"
         self.addChild(bestItemScoreLabelNode)
 
-
     }
+    
+/*
+    func playEffectSound(){
+        let play = SKAudioNode(fileNamed: "itemGet")
+        
+    }
+*/
 }
