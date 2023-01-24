@@ -15,7 +15,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var starNode: SKNode! // 星追加
     var bird: SKSpriteNode!
     var starEx: SKSpriteNode!
-    var backGroundMusic: SKAudioNode!
+//    var backGroundMusic: SKAudioNode!
         
     // 衝突判定カテゴリ（識別ID）
     // 「<<」はビットをずらす符号（右側の数値分ビットをずらしている）
@@ -62,7 +62,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupBird()
         
         // BGMの読み込み
-        backGroundMusic = SKAudioNode(fileNamed: "flappyBgm")
+        let backGroundMusic = SKAudioNode(fileNamed: "flappyBgm")
         addChild(backGroundMusic)
 
         // スコア表示ラベルの設定
@@ -90,18 +90,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 鳥の画像サイズを取得
         let birdSize = SKTexture(imageNamed: "bird_a").size()
         
-        // 鳥が通り抜ける隙間の大きさを鳥のサイズの４倍とする
+        // 鳥が通り抜ける隙間の大きさと同じサイズを適用（鳥の４倍のサイズ）
         let slit_length = birdSize.height * 2
         
         // 隙間位置の上下の振れ幅を50ptとする
         let random_y_range: CGFloat = 50
-
-        // 空の中央位置（y座標）を取得
-        let groundSize = SKTexture(imageNamed: "ground").size()
-        let sky_center_y = groundSize.height + (self.frame.size.height - groundSize.height) / 2
-
-        // 壁の画像を読み込む
-        let wallTexture = SKTexture(imageNamed: "wall")
 
         // 星を生成するアクションを作成
         let createStarAnimation = SKAction.run({
@@ -474,7 +467,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.physicsBody?.velocity = CGVector.zero
         // 壁と地面の両方に反発するように戻す
         bird.physicsBody?.collisionBitMask = groundCategory | wallCategory
-        bird.zPosition = 0
+        bird.zRotation = 0
         
         // 全ての壁を取り除く
         wallNode.removeAllChildren()
